@@ -6,12 +6,13 @@
 
 rm(list = ls())
 
-#1 Benfords Law
-#Function to calcluate Leemis' m statistic, and Cho's Gains d given a vector of election returns.
-#Also performs hypothesis tests at various significance levels based off calculated values
-#Inputs:
-#@X vecotr or matrix of election returns
-#@Control, determines which statistics should be returned. 1 indicates just Leemis' m statistic.
+# 1 Benfords Law
+# Function to calcluate Leemis' m statistic, and Cho's Gains d given a vector of election returns.
+# Also performs hypothesis tests at various significance levels based off calculated values
+# Then returns statistical signifance of statistic from hypothesis test
+# Inputs:
+# @X vecotr or matrix of election returns
+# @Control, determines which statistics should be returned. 1 indicates just Leemis' m statistic.
 #   2 indicates just Cho-Gains' d will be returned. Any other number will return both statistics. 
 #   By default if no value is specificed, both will be returned.
 BenfordsLaw = function(X,control=3){ # By default, print both statistics
@@ -25,47 +26,104 @@ BenfordsLaw = function(X,control=3){ # By default, print both statistics
   m = max(mVector) # Get lemmis m by taking max above mVector
   d = sqrt(sum(mVector^2)) #Calculate Cho Gain's D
   
-  hypothTest(m,d) # Determine Siginifance by calling hypoth test fn below
+  # Determine Siginifance by calling hypoth test functions below
+  alphaM = hypothTestLemmis(m) 
+  alphad = hypothTestChoGains(d) 
   
   # Only return desired output, as per user specification
-  if (control == 1){
-    return(m)
+  if (control == 1){ # Just Lemmis
+    return(c(m,alphaM))
   }
-  if (control == 2){
-    return(d)
+  if (control == 2){ # Just ChoGains
+    return(c(d,alphad))
   }
-  else{
-    return(c(m,d))
+  else{ # Both Stats
+    return(c(c(m,alphaM),c(d,alphad)))
   }
  
 }
 
 # 2 Hypothesis Testing
-# Perform hpothesis testing based off the Lemmis' m statistic and the Cho Gains' d statistic.
-# Prints an output statement indicating conclusion and significance level.
+# Perform hpothesis testing based off the Lemmis' m statistic
+# Prints an output statement indicating conclusion and significance level. Also returns signficance level
 # Inputs: 
 # @LemmisM = lemmis' m statistic as a scalar numeric type (numeric/integer/etc.)
-# @ChoGainsD = Cho-Gain's D statistic as a scalar numeric type (numeric/integer/etc.)
-hypothTest = function(LemmisM,ChoGainD){
+hypothTestLemmis = function(LemmisM){
   # Determine Conclusion and signifance level using values specified in assignment
-  if(LemmisM>1.212 & ChoGainD>1.569){
+  if(LemmisM>1.212){
     print("Reject Null Hypothesis at .01 Significance Level")
-  }else if(LemmisM>.967 & ChoGainD>1.330){
+    return(.01)
+  }else if(LemmisM>.967){
     print("Reject Null Hypothesis at .05 Significance Level")
-  }else if(LemmisM>.851 & ChoGainD>1.212){
+    return(.05)
+  }else if(LemmisM>.851){
     print("Reject Null Hypothesis at .10 Significance Level")
+    return(.1)
   }else{
     print("Fail to Reject Null Hypothesis")
+    return(1)
   }
 }
 
+# Perform hpothesis testing based off the Cho-Gains' d statistic
+# Prints an output statement indicating conclusion and significance level. Also returns signficance level
+# Inputs: 
+# @ChoGainsD = Cho-Gains d statistic as a scalar numeric type (numeric/integer/etc.)
+hypothTestChoGains = function(ChoGainD){
+  # Determine Conclusion and signifance level using values specified in assignment
+  if( ChoGainD>1.569){
+    print("Reject Null Hypothesis at .01 Significance Level")
+    return(.01)
+  }else if( ChoGainD>1.330){
+    print("Reject Null Hypothesis at .05 Significance Level")
+    return(.05)
+  }else if(ChoGainD>1.212){
+    print("Reject Null Hypothesis at .10 Significance Level")
+    return(.1)
+  }else{
+    print("Fail to Reject Null Hypothesis")
+    return(1)
+  }
+}
 
+# Part 3, crate Print Bedford's function
+# Takes in Election results in matrix or vector form, applies Benfords 
+# Law then prints a table containing  the statistic name, statistic, 
+# signifcance level and legend option to specify desired output
+# @ x= election results in matrix or vector form
+# @ control = specify output; 1 = just Leemis' m; 2 = just Cho Gain's; else = both statistics
+print.benfords = function(x, control = 3){
+  temp = BenfordsLaw(x)
+  statistic.value = c(temp[1],temp[3])
+  sigLevel = c(temp[2],temp[4])
+  #Recast Significance Level into Asterisk notation
+  signifiance.level = NULL
+  for (i in 1:length(sigLevel)){
+    if (sigLevel[i] ==.01){
+      signifiance.level[i] = "*"
+    } else if (sigLevel[i] ==.05){
+      signifiance.level[i] = "**"
+    }else if (sigLevel[i] ==.10){
+      signifiance.level[i] = "***"
+    }else{
+      signifiance.level[i] = "****"
+    }
+  }
+  statNames = c('Lemmis\' m' , "Cho Gains\' d" )
+  # Creae Data Frame Containing Necessary Information
+  stats.table = data.frame(statistic.value,signifiance.level,row.names = statNames)
+  return(stats.table)
+}
+
+
+
+# Test Code
 # BenfordsLaw(as.numeric(1:9))
 m = BenfordsLaw(1:9,3)
-# Check Code
-x = c(1598,2001,193,26,35,78)
+x = c(1598,2001,193,26,35,78) #Try Vector
 BenfordsLaw(x,1)
-x2 = matrix(c(605,887,7991,123,115,1009,212,345,607))
-BenfordsLaw(x,2)
+x2 = matrix(c(605,887,7991,123,115,1009,212,345,607)) #Try Matrix
+BenfordsLaw(x2,2)
+BenfordsLaw(as.vector(x2)) # Check that vector and matrix get same result
 
-
+print.benfords(x)
