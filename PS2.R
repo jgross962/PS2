@@ -51,16 +51,16 @@ BenfordsLaw = function(X,control=3){ # By default, print both statistics
 hypothTestLemmis = function(LemmisM){
   # Determine Conclusion and signifance level using values specified in assignment
   if(LemmisM>1.212){
-    print("Reject Null Hypothesis at .01 Significance Level")
+    print("Reject Null Hypothesis at .01 Significance Level using Lemmis m")
     return(.01)
   }else if(LemmisM>.967){
-    print("Reject Null Hypothesis at .05 Significance Level")
+    print("Reject Null Hypothesis at .05 Significance Level using Lemmis m")
     return(.05)
   }else if(LemmisM>.851){
-    print("Reject Null Hypothesis at .10 Significance Level")
+    print("Reject Null Hypothesis at .10 Significance Level using Lemmis m")
     return(.1)
   }else{
-    print("Fail to Reject Null Hypothesis")
+    print("Fail to Reject Null Hypothesis using Lemmis m")
     return(1)
   }
 }
@@ -72,16 +72,16 @@ hypothTestLemmis = function(LemmisM){
 hypothTestChoGains = function(ChoGainD){
   # Determine Conclusion and signifance level using values specified in assignment
   if( ChoGainD>1.569){
-    print("Reject Null Hypothesis at .01 Significance Level")
+    print("Reject Null Hypothesis at .01 Significance Level using Cho-Gains d")
     return(.01)
   }else if( ChoGainD>1.330){
-    print("Reject Null Hypothesis at .05 Significance Level")
+    print("Reject Null Hypothesis at .05 Significance Level using Cho-Gains d")
     return(.05)
   }else if(ChoGainD>1.212){
-    print("Reject Null Hypothesis at .10 Significance Level")
+    print("Reject Null Hypothesis at .10 Significance Level using Cho-Gains d")
     return(.1)
   }else{
-    print("Fail to Reject Null Hypothesis")
+    print("Fail to Reject Null Hypothesis using Cho-Gains d")
     return(1)
   }
 }
@@ -100,20 +100,27 @@ print.benfords = function(x, control = 3){
   signifiance.level = NULL
   for (i in 1:length(sigLevel)){
     if (sigLevel[i] ==.01){
-      signifiance.level[i] = "*"
-    } else if (sigLevel[i] ==.05){
-      signifiance.level[i] = "**"
-    }else if (sigLevel[i] ==.10){
-      signifiance.level[i] = "***"
-    }else{
       signifiance.level[i] = "****"
+    } else if (sigLevel[i] ==.05){
+      signifiance.level[i] = "***"
+    }else if (sigLevel[i] ==.10){
+      signifiance.level[i] = "**"
+    }else{
+      signifiance.level[i] = "*"
     }
   }
   statNames = c('Lemmis\' m' , "Cho Gains\' d" )
   # Creae Data Frame Containing Necessary Information
   stats.table = data.frame(statistic.value,signifiance.level,row.names = statNames)
-  return(stats.table)
+  
+  legend = rbind("* = fail to reject the null hypothesis at 10% signifance level",
+                 "** = reject the null hypothesis at 10% signifance level",
+                 "*** = reject the null hypothesis at the 5% significance level",
+                 "**** = reject the null hypothesis at the 1% signifance level ")
+  
+  return(list(stats.table,legend))
 }
+
 
 
 
@@ -126,4 +133,5 @@ x2 = matrix(c(605,887,7991,123,115,1009,212,345,607)) #Try Matrix
 BenfordsLaw(x2,2)
 BenfordsLaw(as.vector(x2)) # Check that vector and matrix get same result
 
-print.benfords(x)
+t = print.benfords(x)
+t
