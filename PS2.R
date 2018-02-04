@@ -122,6 +122,22 @@ print.benfords = function(x, control = 3){
 }
 
 
+# Part 4. Create CSV from Print.Bedford Function
+# Calls Print Bedford Function, applied functions defined above, then writes a csv to desired file path
+# Inputs
+# @x = election result vector or matrix
+# @ Benfords.filePath = file path to write folder too
+Benfords.writeCSV = function (x,Benfords.filePath){
+  setwd(Benfords.filePath)
+  doc.writeTo = file("BenfordsLawData.csv")
+  benTable = print.benfords(x)
+  sink(doc.writeTo)
+  write.csv(benTable,doc.writeTo)
+  close(doc.writeTo)
+  
+}
+
+
 
 
 # Test Code
@@ -135,3 +151,4 @@ BenfordsLaw(as.vector(x2)) # Check that vector and matrix get same result
 
 t = print.benfords(x)
 t
+Benfords.writeCSV(x,"C:/Users/Me/Desktop/5625")
