@@ -128,12 +128,18 @@ print.benfords = function(x, control = 3){
 # @x = election result vector or matrix
 # @ Benfords.filePath = file path to write folder too
 Benfords.writeCSV = function (x,Benfords.filePath){
+
   setwd(Benfords.filePath)
   doc.writeTo = file("BenfordsLawData.csv")
-  benTable = print.benfords(x)
+  output = print.benfords(x)
   sink(doc.writeTo)
-  write.csv(benTable,doc.writeTo)
-  close(doc.writeTo)
+  print(output)
+  sink()
+#  sink(doc.writeTo)
+ # write.csv(benTable[[1]],doc.writeTo)
+  #write.csv2(benTable[[2]],doc.writeTo)
+ # write.csv2(benTable[[2]],append=TRUE, sep = " /n")
+  
   
 }
 
