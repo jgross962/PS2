@@ -129,16 +129,12 @@ print.benfords = function(x, control = 3){
 # @ Benfords.filePath = file path to write folder too
 Benfords.writeCSV = function (x,Benfords.filePath){
 
-  setwd(Benfords.filePath)
+  setwd(Benfords.filePath) 
   doc.writeTo = file("BenfordsLawData.csv")
   output = print.benfords(x)
   sink(doc.writeTo)
   print(output)
   sink()
-#  sink(doc.writeTo)
- # write.csv(benTable[[1]],doc.writeTo)
-  #write.csv2(benTable[[2]],doc.writeTo)
- # write.csv2(benTable[[2]],append=TRUE, sep = " /n")
   
   
 }
@@ -146,8 +142,8 @@ Benfords.writeCSV = function (x,Benfords.filePath){
 
 
 
-# Test Code
-# BenfordsLaw(as.numeric(1:9))
+# Test Code  -- here to demonstrate code works, not part of actual solution
+BenfordsLaw(as.numeric(1:9))
 m = BenfordsLaw(1:9,3)
 x = c(1598,2001,193,26,35,78) #Try Vector
 BenfordsLaw(x,1)
